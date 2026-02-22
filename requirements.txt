@@ -1,0 +1,10 @@
+Flask
+Flask-SQLAlchemy
+Flask-Login
+Flask-WTF
+WTForms
+email-validator
+Werkzeug
+Pillow
+gunicorn
+psycopg2-binary
