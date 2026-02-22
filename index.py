@@ -1,23 +1,28 @@
 import os
-from flask import Flask
+import sys
 
-# 1) Define the Flask app directly in index.py to avoid ModuleNotFoundError
-app = Flask(__name__)
-
-# 2) Simple test route to confirm the server is running
-@app.route("/")
-def hello():
-    return "Hello World - Flask is working on Render/Railway!"
-
-# 3) Setup paths for future integration
+# 1) Get the absolute path of the project folder
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, 'Sky_Hub_Project')
 
-# Point static and template folders to your project directories
-app.template_folder = os.path.join(PROJECT_DIR, 'templates')
-app.static_folder = os.path.join(PROJECT_DIR, 'static')
+# 2) Add the project directory to sys.path so Python can find app.py, models, etc.
+if PROJECT_DIR not in sys.path:
+    sys.path.insert(0, PROJECT_DIR)
+
+# 3) Import the real Flask app from Sky_Hub_Project/app.py
+try:
+    from app import app as application
+except ImportError:
+    # Fallback if imports are still tricky on some environments
+    sys.path.append(os.getcwd())
+    from Sky_Hub_Project.app import app as application
+
+# 4) Configure folders for static and templates
+application.template_folder = os.path.join(PROJECT_DIR, 'templates')
+application.static_folder = os.path.join(PROJECT_DIR, 'static')
+
+app = application
 
 if __name__ == "__main__":
-    # Use the port defined by the environment (Render/Railway)
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
