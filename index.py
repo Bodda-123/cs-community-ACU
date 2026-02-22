@@ -1,23 +1,27 @@
 import os
 import sys
 
-# 1) Get the absolute path of the project folder
+# 1) حدد المسار المطلق للمجلد الحالي ومجلد المشروع
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, 'Sky_Hub_Project')
 
-# 2) Add the project directory to sys.path so Python can find app.py, models, etc.
+# 2) أضف مجلد المشروع إلى مسارات البحث الخاصة بـ Python
+# نستخدم insert(0) لضمان أن يكون مجلدك هو الأولوية الأولى
 if PROJECT_DIR not in sys.path:
     sys.path.insert(0, PROJECT_DIR)
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 
-# 3) Import the real Flask app from Sky_Hub_Project/app.py
+# 3) استيراد تطبيق Flask الحقيقي
 try:
+    # نحاول الاستيراد المباشر لأن المجلد مضاف لـ sys.path
     from app import app as application
 except ImportError:
-    # Fallback if imports are still tricky on some environments
-    sys.path.append(os.getcwd())
+    # محاولة بديلة في حال فشل الاستيراد الأول
+    sys.path.append(BASE_DIR)
     from Sky_Hub_Project.app import app as application
 
-# 4) Configure folders for static and templates
+# 4) ضبط مسارات التنسيقات والقوالب
 application.template_folder = os.path.join(PROJECT_DIR, 'templates')
 application.static_folder = os.path.join(PROJECT_DIR, 'static')
 
