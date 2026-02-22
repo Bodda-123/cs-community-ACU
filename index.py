@@ -35,5 +35,5 @@ app = application
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    # نستخدم debug=True مؤقتاً لمعرفة سبب الـ Internal Server Error
-    app.run(host="0.0.0.0", port=port, debug=True)
+    # تم إيقاف وضع التصحيح للإنتاج
+    app.run(host="0.0.0.0", port=port, debug=False)
