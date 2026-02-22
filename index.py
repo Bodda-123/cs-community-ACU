@@ -25,6 +25,12 @@ except ImportError:
 application.template_folder = os.path.join(PROJECT_DIR, 'templates')
 application.static_folder = os.path.join(PROJECT_DIR, 'static')
 
+# 5) إنشاء جداول قاعدة البيانات تلقائياً إذا لم تكن موجودة
+with application.app_context():
+    from models import db
+    db.create_all()
+    print("Database tables initialized successfully!")
+
 app = application
 
 if __name__ == "__main__":
