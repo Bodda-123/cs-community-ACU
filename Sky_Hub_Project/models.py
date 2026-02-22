@@ -28,6 +28,7 @@ class User(db.Model, UserMixin):
     # File uploads — stored as filename only (not full path)
     cv_file = db.Column(db.String(150), nullable=True)
     profile_image = db.Column(db.String(150), nullable=False, default='default_profile.png')
+    is_admin = db.Column(db.Boolean, default=False)
 
     # Relationships
     posts = db.relationship("Post", back_populates="author", cascade="all, delete-orphan")

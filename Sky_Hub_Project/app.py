@@ -375,16 +375,20 @@ def new_post():
             video_filename = secure_filename(video_file.filename)
             video_file.save(os.path.join(app.config["UPLOAD_FOLDER"], video_filename))
 
-        # Auto-generate title from first 80 chars of content if not provided
+        # Auto-generate title from content snippet or fallback if empty
         content_text = form.content.data or ""
         auto_title = (form.title.data or "").strip()
+        
         if not auto_title:
-            auto_title = content_text[:80].strip()
-            if len(content_text) > 80:
-                auto_title += "…"
+            if content_text:
+                auto_title = content_text[:80].strip()
+                if len(content_text) > 80:
+                    auto_title += "…"
+            else:
+                auto_title = "Image Post" if image_filename else "Video Post" if video_filename else "New Post"
 
         post = Post(
-            title=auto_title or "Untitled",
+            title=auto_title,
             content=content_text,
             image_file=image_filename,
             video_file=video_filename,
@@ -446,7 +450,8 @@ def edit_post(post_id):
 @login_required
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
-    if post.user_id != current_user.id:
+    # Only allow the author OR an admin to delete
+    if post.user_id != current_user.id and not current_user.is_admin:
         abort(403)
     db.session.delete(post)
     db.session.commit()

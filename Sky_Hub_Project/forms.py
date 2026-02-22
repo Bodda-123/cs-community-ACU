@@ -66,7 +66,7 @@ class EditProfileForm(FlaskForm):
 class PostForm(FlaskForm):
     # Title is optional — auto-generated from content snippet in the route
     title = StringField("Title", validators=[Optional(), Length(max=200)], filters=[strip_filter])
-    content = TextAreaField("Content", validators=[DataRequired(), Length(min=1)], filters=[strip_filter])
+    content = TextAreaField("Content", validators=[Optional(), Length(max=2000)], filters=[strip_filter])
     image = FileField("Upload Image", validators=[Optional(), FileAllowed(["jpg", "jpeg", "png", "gif"], "Images only!")])
     video = FileField("Upload Video", validators=[Optional(), FileAllowed(["mp4", "webm", "ogg"], "Videos only!")])
     submit = SubmitField("Publish")

@@ -34,7 +34,25 @@ os.makedirs(os.path.join(UPLOAD_ROOT, 'cv'), exist_ok=True)
 with application.app_context():
     from models import db
     db.create_all()
-    print("Database tables initialized successfully!")
+    
+    # التأكد من وجود صورة البروفايل الافتراضية
+    default_avatar_path = os.path.join(UPLOAD_ROOT, 'profile_pics', 'default_profile.png')
+    if not os.path.exists(default_avatar_path):
+        try:
+            from create_default_avatar import make_with_pillow
+            make_with_pillow()
+        except Exception as e:
+            print(f"Warning: Could not create default avatar: {e}")
+            
+    # جعل المستخدم صاحب البريد الإلكتروني أدمن للتجربة
+    from models import User
+    admin_user = User.query.filter_by(email="abdelrahmanaboalsouad@gmail.com").first()
+    if admin_user and not admin_user.is_admin:
+        admin_user.is_admin = True
+        db.session.commit()
+        print(f"User {admin_user.email} promoted to Admin.")
+            
+    print("Application initialized successfully!")
 
 app = application
 
