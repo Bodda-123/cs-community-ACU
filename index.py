@@ -1,18 +1,24 @@
-import sys
 import os
+import sys
+from flask import Flask
 
-# Get the absolute path of the current directory (Root)
+# 1) Define the Flask app directly inside index.py
+app = Flask(__name__)
+
+# 2) Simple route for testing Render deployment
+@app.route("/")
+def hello():
+    return "Hello World - Flask is working on Render!"
+
+# Set up paths so the app can find your project folders (static/templates)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Path to the Sky_Hub_Project folder where app.py resides
 PROJECT_DIR = os.path.join(BASE_DIR, 'Sky_Hub_Project')
 
-# Add the project directory to sys.path so it can find models, forms, etc.
-sys.path.append(PROJECT_DIR)
+# Tell Flask where to look for your existing frontend files
+app.template_folder = os.path.join(PROJECT_DIR, 'templates')
+app.static_folder = os.path.join(PROJECT_DIR, 'static')
 
-from app import app as application
-
-# Explicitly tell Flask where to find templates and static files
-application.template_folder = os.path.join(PROJECT_DIR, 'templates')
-application.static_folder = os.path.join(PROJECT_DIR, 'static')
-
-app = application
+if __name__ == "__main__":
+    # Get port from environment or default to 5000
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
