@@ -29,8 +29,9 @@ if os.environ.get("DATABASE_URL"):
 else:
     app.config.from_object(DevConfig)
 
-# Upload root
-UPLOAD_FOLDER = os.path.join("static", "uploads")
+# Fix: Use Absolute Paths for Uploads based on this file's directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "uploads")
 CV_FOLDER = os.path.join(UPLOAD_FOLDER, "cv")
 PICTURE_FOLDER = os.path.join(UPLOAD_FOLDER, "profile_pics")
 
@@ -109,6 +110,11 @@ def profile_image_url(filename: str) -> str:
 
 # Expose helper to Jinja2 templates
 app.jinja_env.globals["profile_image_url"] = profile_image_url
+
+@app.route("/download_cv/<filename>")
+def download_cv(filename):
+    from flask import send_from_directory
+    return send_from_directory(CV_FOLDER, filename)
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Storage Verification (Production Safety)
