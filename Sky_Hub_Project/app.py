@@ -111,6 +111,21 @@ def profile_image_url(filename: str) -> str:
 app.jinja_env.globals["profile_image_url"] = profile_image_url
 
 # ─────────────────────────────────────────────────────────────────────────────
+#  Storage Verification (Production Safety)
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.route("/debug/storage")
+def debug_storage():
+    """Verify if the filesystem is persistent."""
+    results = {
+        "upload_folder_abs": os.path.abspath(app.config["UPLOAD_FOLDER"]),
+        "profile_pics_exists": os.path.exists(PICTURE_FOLDER),
+        "cv_folder_exists": os.path.exists(CV_FOLDER),
+        "files_in_pics": os.listdir(PICTURE_FOLDER)[:10] if os.path.exists(PICTURE_FOLDER) else "N/A"
+    }
+    return results
+
+# ─────────────────────────────────────────────────────────────────────────────
 #  User Loader
 # ─────────────────────────────────────────────────────────────────────────────
 

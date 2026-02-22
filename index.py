@@ -25,6 +25,11 @@ except ImportError:
 application.template_folder = os.path.join(PROJECT_DIR, 'templates')
 application.static_folder = os.path.join(PROJECT_DIR, 'static')
 
+# التأكد من وجود مجلد الرفع في مسار الإنتاج
+UPLOAD_ROOT = os.path.join(application.static_folder, 'uploads')
+os.makedirs(os.path.join(UPLOAD_ROOT, 'profile_pics'), exist_ok=True)
+os.makedirs(os.path.join(UPLOAD_ROOT, 'cv'), exist_ok=True)
+
 # 5) إنشاء جداول قاعدة البيانات تلقائياً إذا لم تكن موجودة
 with application.app_context():
     from models import db
